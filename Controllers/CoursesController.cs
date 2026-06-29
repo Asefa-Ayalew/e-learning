@@ -1,0 +1,54 @@
+using ELearning.Api.DTOs;
+using ELearning.Api.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ELearning.Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class CoursesController : ControllerBase
+{
+    private readonly ICourseService _courseService;
+
+    public CoursesController(ICourseService courseService)
+    {
+        _courseService = courseService;
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        return Ok(await _courseService.GetAllAsync());
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var course = await _courseService.GetByIdAsync(id);
+
+        if (course == null)
+            return NotFound();
+
+        return Ok(course);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create(CourseCreateDto dto)
+    {
+        var created = await _courseService.CreateAsync(dto);
+        return Ok(created);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var result = await _courseService.DeleteAsync(id);
+
+        if (!result)
+            return NotFound();
+
+        return NoContent();
+    }
+}

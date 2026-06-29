@@ -1,0 +1,81 @@
+using ELearning.Api.Data;
+using ELearning.Api.DTOs;
+using ELearning.Api.Interfaces;
+using ELearning.Api.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace ELearning.Api.Services;
+
+public class LessonService : ILessonService
+{
+    private readonly ApplicationDbContext _context;
+
+    public LessonService(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<List<LessonResponseDto>> GetAllAsync()
+    {
+        return await _context.Lessons
+            .Select(l => new LessonResponseDto
+            {
+                Id = l.Id,
+                Title = l.Title,
+                Content = l.Content,
+                CourseId = l.CourseId,
+                CreatedAt = l.CreatedAt
+            })
+            .ToListAsync();
+    }
+
+    public async Task<LessonResponseDto?> GetByIdAsync(int id)
+    {
+        var lesson = await _context.Lessons.FindAsync(id);
+
+        if (lesson == null) return null;
+
+        return new LessonResponseDto
+        {
+            Id = lesson.Id,
+            Title = lesson.Title,
+            Content = lesson.Content,
+            CourseId = lesson.CourseId,
+            CreatedAt = lesson.CreatedAt
+        };
+    }
+
+    public async Task<LessonResponseDto> CreateAsync(LessonCreateDto dto)
+    {
+        var lesson = new Lesson
+        {
+            Title = dto.Title,
+            Content = dto.Content,
+            CourseId = dto.CourseId
+        };
+
+        _context.Lessons.Add(lesson);
+        await _context.SaveChangesAsync();
+
+        return new LessonResponseDto
+        {
+            Id = lesson.Id,
+            Title = lesson.Title,
+            Content = lesson.Content,
+            CourseId = lesson.CourseId,
+            CreatedAt = lesson.CreatedAt
+        };
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var lesson = await _context.Lessons.FindAsync(id);
+
+        if (lesson == null) return false;
+
+        _context.Lessons.Remove(lesson);
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+}
