@@ -29,6 +29,12 @@ public class LessonsController : ControllerBase
 
         return Ok(lesson);
     }
+    [HttpGet("search")]
+    public async Task<IActionResult> Search(string query, int page, int pageSize)
+    {
+        var result = await _lessonService.SearchAsync(query, page, pageSize);
+        return Ok(result);
+    }
 
     [HttpPost]
     public async Task<IActionResult> Create(LessonCreateDto dto)

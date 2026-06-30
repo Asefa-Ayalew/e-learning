@@ -45,6 +45,25 @@ public class LessonService : ILessonService
         };
     }
 
+    public async Task<List<LessonResponseDto>> SearchAsync(string query, int page = 1, int pageSize = 10)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+            return new List<LessonResponseDto>();
+
+        return await _context.Lessons
+        .Where(c =>
+        EF.Functions.ILike(c.Title, $"%{query}%") ||
+        EF.Functions.ILike(c.Description, $"%{query}%"))
+        .Skip((page - 1) * pageSize)
+        .Take(pageSize)
+        .Select(c => new LessonResponseDto
+        {
+            Id = c.Id,
+            Title = c.Title,
+            Content = c.Content
+        })
+        .ToListAsync();
+    }
     public async Task<LessonResponseDto> CreateAsync(LessonCreateDto dto)
     {
         var lesson = new Lesson
