@@ -42,6 +42,25 @@ public class CourseService : ICourseService
             CreatedAt = course.CreatedAt
         };
     }
+    public async Task<List<CourseResponseDto>> SearchAsync(string query, int page = 1, int pageSize = 10)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+            return new List<CourseResponseDto>();
+
+        return await _context.Courses
+        .Where(c =>
+        EF.Functions.ILike(c.Title, $"%{query}%") ||
+        EF.Functions.ILike(c.Description, $"%{query}%"))
+        .Skip((page - 1) * pageSize)
+        .Take(pageSize)
+        .Select(c => new CourseResponseDto
+        {
+            Id = c.Id,
+            Description = c.Description,
+            CreatedAt = c.CreatedAt
+        })
+        .ToListAsync();
+    }
 
     public async Task<CourseResponseDto> CreateAsync(CourseCreateDto dto)
     {

@@ -33,6 +33,12 @@ public class CoursesController : ControllerBase
 
         return Ok(course);
     }
+    [HttpGet("search")]
+    public async Task<IActionResult> Search(string query, int page, int pageSize)
+    {
+        var result = await _courseService.SearchAsync(query, page, pageSize);
+        return Ok(result);
+    }
 
     [HttpPost]
     public async Task<IActionResult> Create(CourseCreateDto dto)
