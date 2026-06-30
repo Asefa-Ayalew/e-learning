@@ -132,3 +132,4 @@ D:\c#\ELearning\ELearning.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Protocol
 D:\c#\ELearning\ELearning.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 D:\c#\ELearning\ELearning.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Tokens.dll
 D:\c#\ELearning\ELearning.Api\bin\Debug\net10.0\System.IdentityModel.Tokens.Jwt.dll
+D:\c#\ELearning\ELearning.Api\obj\Debug\net10.0\ELearning.Api.sourcelink.json

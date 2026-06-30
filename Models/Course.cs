@@ -7,6 +7,6 @@ namespace ELearning.Api.Models
         public string Description { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public DateTime CreatedAt { get; set;} = DateTime.UtcNow;
-        // public<List<Lesson>> Lessons { get; set;} = new()
+        public List<Enrollment> Enrollments { get; set; } = new();
     }
 }   
