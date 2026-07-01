@@ -3,6 +3,7 @@ using ELearning.Api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ELearning.Api.Controllers;
+
 [ApiController]
 [Route("api/auth")]
 public class AuthController : ControllerBase
@@ -13,14 +14,21 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterDto dto) {
+    public async Task<IActionResult> Register(RegisterDto dto)
+    {
         var result = await _authService.RegisterAsync(dto);
         return Ok(result);
     }
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto dto)
     {
-    var result = await _authService.LoginAsync(dto);
-    return Ok(result);
+        var result = await _authService.LoginAsync(dto);
+        return Ok(result);
+    }
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh(RefreshTokenDto dto)
+    {
+        var result = await _authService.RefreshTokenAsync(dto.RefreshToken);
+        return Ok(result);
     }
 }

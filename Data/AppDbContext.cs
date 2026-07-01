@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ELearning.Api.Models;
+using eLearning.Api.Models;
 
 namespace ELearning.Api.Data
 {
@@ -13,5 +14,6 @@ namespace ELearning.Api.Data
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

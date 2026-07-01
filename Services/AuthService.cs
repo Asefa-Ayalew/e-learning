@@ -1,3 +1,4 @@
+using eLearning.Api.Models;
 using ELearning.Api.Data;
 using ELearning.Api.DTOs;
 using ELearning.Api.Interfaces;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace ELearning.Api.Services;
@@ -31,28 +33,85 @@ public class AuthService : IAuthService
         {
             FullName = dto.FullName,
             Email = dto.Email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password)
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+            Role = "Student"
         };
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
+        var accessToken = GenerateToken(user);
+        var refreshToken = GenerateRefreshToken();
+
+        _context.RefreshTokens.Add(new RefreshToken
+        {
+            Token = refreshToken,
+            UserId = user.Id,
+            Expires = DateTime.UtcNow.AddDays(7),
+            IsRevoked = false
+        });
+
+        await _context.SaveChangesAsync();
+
         return new AuthResponseDto
         {
-            Token = GenerateToken(user)
+            Token = accessToken,
+            RefreshToken = refreshToken
         };
     }
-
     public async Task<AuthResponseDto> LoginAsync(LoginDto dto)
     {
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == dto.Email);
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             throw new Exception("Invalid credentials");
+        var accessToken = GenerateToken(user);
+        var refreshToken = GenerateRefreshToken();
+
+        _context.RefreshTokens.Add(new RefreshToken
+        {
+            Token = refreshToken,
+            UserId = user.Id,
+            Expires = DateTime.UtcNow.AddDays(7),
+            IsRevoked = false
+        });
+
+        await _context.SaveChangesAsync();
 
         return new AuthResponseDto
         {
-            Token = GenerateToken(user)
+            Token = accessToken,
+            RefreshToken = refreshToken
+        };
+    }
+
+    public async Task<AuthResponseDto> RefreshTokenAsync(string refreshToken)
+    {
+        var storedToken = await _context.RefreshTokens
+        .Include(x => x.User).FirstOrDefaultAsync(x => x.Token == refreshToken);
+
+        if (storedToken == null || storedToken.IsRevoked || storedToken.Expires <= DateTime.UtcNow)
+            throw new Exception("Invalid refresh token");
+
+        var user = storedToken.User;
+        var accessToken = GenerateToken(user);
+        var newRefreshToken = GenerateRefreshToken();
+        storedToken.IsRevoked = true;
+
+        _context.RefreshTokens.Add(new RefreshToken
+        {
+            Token = newRefreshToken,
+            UserId = user.Id,
+            Expires = DateTime.UtcNow.AddDays(7),
+            IsRevoked = false
+        });
+
+        await _context.SaveChangesAsync();
+
+        return new AuthResponseDto
+        {
+            Token = accessToken,
+            RefreshToken = newRefreshToken
         };
     }
 
@@ -76,5 +135,9 @@ public class AuthService : IAuthService
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+    private string GenerateRefreshToken()
+    {
+        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
     }
 }
