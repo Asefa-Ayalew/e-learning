@@ -81,6 +81,36 @@ public class EnrollmentService : IEnrollmentService
             EnrolledAt = enrollment.EnrolledAt
         };
     }
+    public async Task<EnrollmentResponseDto?> UpdateAsync(int id, EnrollmentUpdateDto dto)
+    {
+        var enrollment = await _context.Enrollments.FindAsync();
+        if (enrollment == null) return null;
+
+        var user = await _context.Users.FindAsync(dto.UserId);
+        if (user == null)
+            throw new Exception("User Not Found");
+        var course = await _context.Courses.FindAsync(dto.CourseId);
+        if (course == null)
+            throw new Exception("Course Not Found");
+        var exists = await _context.Enrollments.AnyAsync(e =>
+        e.Id != id && e.UserId == dto.UserId && e.CourseId == dto.CourseId);
+
+        if (exists)
+            throw new Exception("Student already enrolled in this course.");
+
+        enrollment.UserId = dto.UserId;
+        enrollment.CourseId = dto.CourseId;
+
+        return new EnrollmentResponseDto
+        {
+            Id = enrollment.Id,
+            UserId = enrollment.UserId,
+            UserName = user.FullName,
+            CourseId = enrollment.CourseId,
+            CourseTitle = course.Title,
+            EnrolledAt = enrollment.EnrolledAt
+        };
+    }
     public async Task<bool> DeleteAsync(int id)
     {
         var enrollment = await _context.Enrollments.FindAsync(id);

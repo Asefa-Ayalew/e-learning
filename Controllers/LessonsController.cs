@@ -43,6 +43,15 @@ public class LessonsController : ControllerBase
 
         return Ok(created);
     }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, LessonUpdateDto dto)
+    {
+        var result = await _lessonService.UpdateAsync(id, dto);
+        if (result == null)
+            return NotFound();
+
+        return Ok(result);
+    }
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

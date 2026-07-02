@@ -85,6 +85,24 @@ public class LessonService : ILessonService
             CreatedAt = lesson.CreatedAt
         };
     }
+    public async Task<LessonResponseDto?> UpdateAsync(int id, LessonUpdateDto dto)
+    {
+        var lesson = await _context.Lessons.FindAsync(id);
+        if (lesson == null) return null;
+
+        lesson.Title = dto.Title;
+        lesson.Content = dto.Content;
+
+        await _context.SaveChangesAsync();
+        return new LessonResponseDto
+        {
+            Id = lesson.Id,
+            Title = lesson.Title,
+            Content = lesson.Content,
+            CourseId = lesson.CourseId,
+            CreatedAt = lesson.CreatedAt
+        };
+    }
 
     public async Task<bool> DeleteAsync(int id)
     {

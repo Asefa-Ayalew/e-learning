@@ -36,6 +36,14 @@ public class EnrollmentController : ControllerBase
 
         return CreatedAtAction(nameof(GetById), new { id = enrollment.Id }, enrollment);
     }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, EnrollmentUpdateDto dto)
+    {
+        var updatedEnrollment = await _enrollmentService.UpdateAsync(id, dto);
+        if (updatedEnrollment == null)
+            return NotFound();
+        return Ok(updatedEnrollment);
+    }
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
