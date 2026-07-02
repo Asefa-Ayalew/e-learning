@@ -91,6 +91,23 @@ public class CourseService : ICourseService
             CreatedAt = course.CreatedAt
         };
     }
+    public async Task<CourseResponseDto?> UpdateAsync(int id, CourseUpdateDto dto)
+    {
+        var course = await _context.Courses.FindAsync(id);
+        if(course == null) return null;
+
+        course.Title = dto.Title;
+        course.Description = dto.Description;
+
+        await _context.SaveChangesAsync();
+        return new CourseResponseDto
+        {
+            Id = course.Id,
+            Title = course.Title,
+            Description = course.Description,
+            CreatedAt = course.CreatedAt
+        };
+    }
 
     public async Task<bool> DeleteAsync(int id)
     {

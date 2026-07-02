@@ -46,6 +46,15 @@ public class CoursesController : ControllerBase
         var created = await _courseService.CreateAsync(dto);
         return Ok(created);
     }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, CourseUpdateDto dto)
+    {
+        var result = await _courseService.UpdateAsync(id, dto);
+        if (result == null)
+            return NotFound();
+
+        return Ok(result);
+    }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
