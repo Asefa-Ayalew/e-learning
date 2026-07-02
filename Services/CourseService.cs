@@ -2,6 +2,7 @@ using ELearning.Api.Data;
 using ELearning.Api.DTOs;
 using ELearning.Api.Interfaces;
 using ELearning.Api.Models;
+using ELearning.Api.Query.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ELearning.Api.Services;
@@ -15,17 +16,26 @@ public class CourseService : ICourseService
         _context = context;
     }
 
-    public async Task<List<CourseResponseDto>> GetAllAsync()
+    public async Task<Collection<CourseResponseDto>> GetAllAsync(CollectionQuery request)
     {
-        return await _context.Courses
-            .Select(c => new CourseResponseDto
-            {
-                Id = c.Id,
-                Title = c.Title,
-                Description = c.Description,
-                CreatedAt = c.CreatedAt
-            })
-            .ToListAsync();
+        IQueryable<Course> query = _context.Courses;
+        query = CollectionQueryBuilder<Course>.Apply(query, request);
+        var total = await query.CountAsync();
+
+        var items = await query
+        .Select(c=> new CourseResponseDto
+        {
+            Id = c.Id,
+            Title = c.Title,
+            Description = c.Description,
+            CreatedAt = c.CreatedAt
+        }).ToListAsync();
+
+        return new Collection<CourseResponseDto>
+        {
+            Items = items,
+            Total = total
+        };
     }
 
     public async Task<CourseResponseDto?> GetByIdAsync(int id)

@@ -16,11 +16,11 @@ public class CoursesController : ControllerBase
         _courseService = courseService;
     }
 
-    [Authorize]
+    // [Authorize]
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] CollectionQuery query)
     {
-        return Ok(await _courseService.GetAllAsync());
+        return Ok(await _courseService.GetAllAsync(query));
     }
 
     [HttpGet("{id}")]
