@@ -16,7 +16,7 @@ public class CourseService : ICourseService
         _context = context;
     }
 
-    public async Task<Collection<CourseResponseDto>> GetAllAsync(CollectionQuery request)
+    public async Task<CollectionResult<CourseResponseDto>> GetAllAsync(CollectionQuery request)
     {
         IQueryable<Course> query = _context.Courses;
         query = CollectionQueryBuilder<Course>.Apply(query, request);
@@ -31,7 +31,7 @@ public class CourseService : ICourseService
             CreatedAt = c.CreatedAt
         }).ToListAsync();
 
-        return new Collection<CourseResponseDto>
+        return new CollectionResult<CourseResponseDto>
         {
             Items = items,
             Total = total

@@ -16,7 +16,7 @@ public class CoursesController : ControllerBase
         _courseService = courseService;
     }
 
-    // [Authorize]
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] CollectionQuery query)
     {

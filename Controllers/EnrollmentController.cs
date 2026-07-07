@@ -15,9 +15,9 @@ public class EnrollmentController : ControllerBase
         _enrollmentService = enrollmentService;
     }
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] CollectionQuery query)
     {
-        var enrollments = await _enrollmentService.GetAllAsync();
+        var enrollments = await _enrollmentService.GetAllAsync(query);
         return Ok(enrollments);
     }
     [HttpGet("{id}")]

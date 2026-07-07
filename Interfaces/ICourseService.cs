@@ -6,8 +6,7 @@ namespace ELearning.Api.Interfaces;
 
 public interface ICourseService
 {
-    Task<Collection<CourseResponseDto>> GetAllAsync(CollectionQuery query);
-
+    Task<CollectionResult<CourseResponseDto>> GetAllAsync(CollectionQuery query);
     Task<CourseResponseDto?> GetByIdAsync(int id);
     Task<List<CourseResponseDto>> SearchAsync(string query, int page, int pageSize);
     Task<CourseResponseDto> CreateAsync(CourseCreateDto dto);

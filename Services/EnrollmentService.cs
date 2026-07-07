@@ -2,6 +2,7 @@ using ELearning.Api.Data;
 using ELearning.Api.DTOs;
 using ELearning.Api.Interfaces;
 using ELearning.Api.Models;
+using ELearning.Api.Query.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class EnrollmentService : IEnrollmentService
@@ -11,20 +12,27 @@ public class EnrollmentService : IEnrollmentService
     {
         _context = context;
     }
-    public async Task<List<EnrollmentResponseDto>> GetAllAsync()
+    public async Task<CollectionResult<EnrollmentResponseDto>> GetAllAsync(CollectionQuery request)
     {
-        return await _context.Enrollments
-        .Include(e => e.User)
-        .Include(e => e.Course)
-        .Select(e => new EnrollmentResponseDto
+        IQueryable<Enrollment> query = _context.Enrollments.AsNoTracking();
+        query = CollectionQueryBuilder<Enrollment>.Apply(query, request);
+        var total = await query.CountAsync();
+
+        var items = await query.Select(e => new EnrollmentResponseDto
         {
             Id = e.Id,
             UserId = e.UserId,
-            UserName = e.User.FullName,
             CourseId = e.CourseId,
+            UserName = e.User.FullName,
             CourseTitle = e.Course.Title,
             EnrolledAt = e.EnrolledAt
         }).ToListAsync();
+
+        return new CollectionResult<EnrollmentResponseDto>
+        {
+            Items = items,
+            Total = total
+        };
     }
     public async Task<EnrollmentResponseDto?> GetByIdAsync(int id)
     {
@@ -83,7 +91,7 @@ public class EnrollmentService : IEnrollmentService
     }
     public async Task<EnrollmentResponseDto?> UpdateAsync(int id, EnrollmentUpdateDto dto)
     {
-        var enrollment = await _context.Enrollments.FindAsync();
+        var enrollment = await _context.Enrollments.FindAsync(id);
         if (enrollment == null) return null;
 
         var user = await _context.Users.FindAsync(dto.UserId);
@@ -100,6 +108,8 @@ public class EnrollmentService : IEnrollmentService
 
         enrollment.UserId = dto.UserId;
         enrollment.CourseId = dto.CourseId;
+
+        await _context.SaveChangesAsync();
 
         return new EnrollmentResponseDto
         {

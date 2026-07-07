@@ -16,9 +16,9 @@ public class LessonsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] CollectionQuery query)
     {
-        return Ok(await _lessonService.GetAllAsync());
+        return Ok(await _lessonService.GetAllAsync(query));
     }
     [HttpGet("id")]
     public async Task<IActionResult> GetById(int id)

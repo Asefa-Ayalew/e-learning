@@ -6,14 +6,26 @@ namespace ELearning.Api.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
         {
         }
 
-        public DbSet<Course> Courses { get; set; }
-        public DbSet<Lesson> Lessons { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Enrollment> Enrollments { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Course> Courses => Set<Course>();
+        public DbSet<Lesson> Lessons => Set<Lesson>();
+        public DbSet<User> Users => Set<User>();
+        public DbSet<Enrollment> Enrollments => Set<Enrollment>();
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Course>()
+                .HasMany(c => c.Lessons)
+                .WithOne(l => l.Course)
+                .HasForeignKey(l => l.CourseId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }
