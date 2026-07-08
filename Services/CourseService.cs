@@ -23,7 +23,7 @@ public class CourseService : ICourseService
         var total = await query.CountAsync();
 
         var items = await query
-        .Select(c=> new CourseResponseDto
+        .Select(c => new CourseResponseDto
         {
             Id = c.Id,
             Title = c.Title,
@@ -94,7 +94,7 @@ public class CourseService : ICourseService
     public async Task<CourseResponseDto?> UpdateAsync(int id, CourseUpdateDto dto)
     {
         var course = await _context.Courses.FindAsync(id);
-        if(course == null) return null;
+        if (course == null) return null;
 
         course.Title = dto.Title;
         course.Description = dto.Description;

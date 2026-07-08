@@ -2,6 +2,7 @@ using ELearning.Api.DTOs;
 using ELearning.Api.Query.Models;
 
 namespace ELearning.Api.Interfaces;
+
 public interface IEnrollmentService
 {
     Task<CollectionResult<EnrollmentResponseDto>> GetAllAsync(CollectionQuery query);

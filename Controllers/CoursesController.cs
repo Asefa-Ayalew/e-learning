@@ -1,5 +1,10 @@
 using ELearning.Api.DTOs;
-using ELearning.Api.Interfaces;
+using ELearning.Api.Features.Courses.Commands.CreateCourse;
+using ELearning.Api.Features.Courses.Commands.DeleteCourse;
+using ELearning.Api.Features.Courses.Commands.UpdateCourse;
+using ELearning.Api.Features.Courses.Queries.GetCourses;
+using ELearning.Api.Features.Courses.Queries.GetCoursesById;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,47 +14,44 @@ namespace ELearning.Api.Controllers;
 [Route("api/[controller]")]
 public class CoursesController : ControllerBase
 {
-    private readonly ICourseService _courseService;
+    private readonly IMediator _mediator;
 
-    public CoursesController(ICourseService courseService)
+    public CoursesController(IMediator mediator)
     {
-        _courseService = courseService;
+        _mediator = mediator;
     }
 
-    [Authorize]
+    // [Authorize]
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] CollectionQuery query)
+    public async Task<IActionResult> GetAll([FromQuery] CollectionQuery request)
     {
-        return Ok(await _courseService.GetAllAsync(query));
+        var result = await _mediator.Send(new GetCoursesQuery(request));
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var course = await _courseService.GetByIdAsync(id);
+        var course = await _mediator.Send(new GetCoursesByIdQuery(id));
 
         if (course == null)
             return NotFound();
 
         return Ok(course);
     }
-    [HttpGet("search")]
-    public async Task<IActionResult> Search(string query, int page, int pageSize)
+
+    [HttpPost]
+    public async Task<IActionResult> Create(CreateCourseCommand command)
     {
-        var result = await _courseService.SearchAsync(query, page, pageSize);
+        var result = await _mediator.Send(command);
+
         return Ok(result);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create(CourseCreateDto dto)
-    {
-        var created = await _courseService.CreateAsync(dto);
-        return Ok(created);
-    }
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, CourseUpdateDto dto)
+    public async Task<IActionResult> Update(int id, UpdateCourseCommand command)
     {
-        var result = await _courseService.UpdateAsync(id, dto);
+        var result = await _mediator.Send(command with { Id = id });
         if (result == null)
             return NotFound();
 
@@ -59,7 +61,7 @@ public class CoursesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var result = await _courseService.DeleteAsync(id);
+        var result = await _mediator.Send(new DeleteCourseCommand(id));
 
         if (!result)
             return NotFound();
