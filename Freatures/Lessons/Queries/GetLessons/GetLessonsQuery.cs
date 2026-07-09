@@ -1,4 +1,4 @@
-using ELearning.Api.DTOs;
+using ELearning.Api.Features.Lessons.DTOs;
 using ELearning.Api.Query.Models;
 using MediatR;
 

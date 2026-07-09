@@ -15,8 +15,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // PostgreSQL DB context
-builder.Services.AddScoped<ICourseService, CourseService>();
-builder.Services.AddScoped<ILessonService, LessonService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 

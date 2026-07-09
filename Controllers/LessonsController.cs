@@ -1,4 +1,3 @@
-using ELearning.Api.DTOs;
 using ELearning.Api.Features.Lessons.Commands.CreateLesson;
 using ELearning.Api.Features.Lessons.Commands.DeleteLesson;
 using ELearning.Api.Features.Lessons.Commands.UpdateLesson;

@@ -1,4 +1,4 @@
-using ELearning.Api.DTOs;
+using ELearning.Api.Features.Courses.DTOs;
 using ELearning.Api.Features.Courses.Commands.CreateCourse;
 using ELearning.Api.Features.Courses.Commands.DeleteCourse;
 using ELearning.Api.Features.Courses.Commands.UpdateCourse;
