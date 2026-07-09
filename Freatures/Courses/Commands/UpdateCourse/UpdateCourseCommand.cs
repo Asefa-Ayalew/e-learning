@@ -1,4 +1,4 @@
-using ELearning.Api.DTOs;
+using ELearning.Api.Features.Courses.DTOs;
 using MediatR;
 
 namespace ELearning.Api.Features.Courses.Commands.UpdateCourse;

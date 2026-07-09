@@ -1,6 +1,7 @@
 using ELearning.Api.DTOs;
+using ELearning.Api.Features.Courses.DTOs;
 using MediatR;
 
 namespace ELearning.Api.Features.Courses.Queries.GetCoursesById;
 
-public record GetCoursesByIdQuery(int Id) : IRequest<CourseResponseDto?>;
+public record GetCoursesByIdQuery(int id) : IRequest<CourseResponseDto?>;

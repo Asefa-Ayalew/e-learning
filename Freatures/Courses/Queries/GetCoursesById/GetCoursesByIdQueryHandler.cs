@@ -1,5 +1,5 @@
 using ELearning.Api.Data;
-using ELearning.Api.DTOs;
+using ELearning.Api.Features.Courses.DTOs;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +19,7 @@ public class GetCoursesByIdQueryHandler : IRequestHandler<GetCoursesByIdQuery, C
     {
         return await _context.Courses
         .AsNoTracking()
-        .Where(c => c.Id == request.Id)
+        .Where(c => c.Id == request.id)
         .Select(c => new CourseResponseDto
         {
             Id = c.Id,

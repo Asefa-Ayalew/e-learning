@@ -1,5 +1,5 @@
 using ELearning.Api.Data;
-using ELearning.Api.DTOs;
+using ELearning.Api.Features.Courses.DTOs;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

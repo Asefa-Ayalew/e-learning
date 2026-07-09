@@ -1,4 +1,4 @@
-namespace ELearning.Api.DTOs;
+namespace ELearning.Api.Features.Courses.DTOs;
 
 public class CourseCreateDto
 {
