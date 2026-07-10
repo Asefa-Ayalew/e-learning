@@ -1,4 +1,5 @@
 using ELearning.Api.DTOs;
+using FluentValidation;
 
 namespace ELearning.Api.Middlewares;
 
@@ -68,6 +69,12 @@ public class ExceptionMiddleware
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 response.StatusCode = StatusCodes.Status400BadRequest;
                 response.Message = exception.Message;
+                break;
+            case ValidationException validationException:
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                response.StatusCode = StatusCodes.Status400BadRequest;
+                response.Message = "Validation Failed";
+                response.Errors = validationException.Errors.Select(error => error.ErrorMessage).ToList();
                 break;
 
             default:

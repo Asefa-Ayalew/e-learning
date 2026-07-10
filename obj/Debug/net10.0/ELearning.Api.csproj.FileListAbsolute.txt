@@ -134,3 +134,5 @@ D:\c#\ELearning\ELearning.Api\obj\Debug\net10.0\ELearning.Api.genruntimeconfig.c
 D:\c#\ELearning\ELearning.Api\obj\Debug\net10.0\ref\ELearning.Api.dll
 D:\c#\ELearning\ELearning.Api\bin\Debug\net10.0\MediatR.dll
 D:\c#\ELearning\ELearning.Api\bin\Debug\net10.0\MediatR.Contracts.dll
+D:\c#\ELearning\ELearning.Api\bin\Debug\net10.0\FluentValidation.dll
+D:\c#\ELearning\ELearning.Api\bin\Debug\net10.0\FluentValidation.DependencyInjectionExtensions.dll
