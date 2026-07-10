@@ -7,6 +7,7 @@ public record UpdateCourseCommand(
     int Id,
     string Title,
     string Description,
+    string Content,
     decimal Price
 )
 : IRequest<CourseResponseDto>;
