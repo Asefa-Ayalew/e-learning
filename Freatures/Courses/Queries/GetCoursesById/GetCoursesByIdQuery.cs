@@ -3,4 +3,4 @@ using MediatR;
 
 namespace ELearning.Api.Features.Courses.Queries.GetCoursesById;
 
-public record GetCoursesByIdQuery(int id) : IRequest<CourseResponseDto?>;
+public record GetCoursesByIdQuery(int id) : IRequest<CourseResponseDto>;

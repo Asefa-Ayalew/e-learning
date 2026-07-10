@@ -34,8 +34,10 @@ public class CoursesController : ControllerBase
     {
         var course = await _mediator.Send(new GetCoursesByIdQuery(id));
 
-        if (course == null)
-            return NotFound();
+        if (course is null)
+        {
+            throw new KeyNotFoundException($"Course with Id {id} was not found");
+        }
 
         return Ok(course);
     }

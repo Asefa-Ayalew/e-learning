@@ -17,7 +17,7 @@ public class GetCoursesByIdQueryHandler : IRequestHandler<GetCoursesByIdQuery, C
         GetCoursesByIdQuery request,
         CancellationToken cancellationToken)
     {
-        return await _context.Courses
+        var course = await _context.Courses
         .AsNoTracking()
         .Where(c => c.Id == request.id)
         .Select(c => new CourseResponseDto
@@ -27,5 +27,13 @@ public class GetCoursesByIdQueryHandler : IRequestHandler<GetCoursesByIdQuery, C
             Description = c.Description,
             CreatedAt = c.CreatedAt
         }).FirstOrDefaultAsync(cancellationToken);
+
+        if (course is null)
+        {
+            throw new KeyNotFoundException($"(Course with Id {request.id} was not found)");
+        }
+        ;
+
+        return course;
     }
 }
