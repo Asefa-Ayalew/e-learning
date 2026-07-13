@@ -35,7 +35,8 @@ public class LessonsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateLessonCommand command)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> Create([FromForm] CreateLessonCommand command)
     {
         var created = await _mediator.Send(command);
 

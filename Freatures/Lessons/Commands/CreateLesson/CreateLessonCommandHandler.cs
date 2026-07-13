@@ -1,3 +1,4 @@
+using AutoMapper;
 using ELearning.Api.Data;
 using ELearning.Api.Features.Lessons.DTOs;
 using ELearning.Api.Models;
@@ -8,9 +9,11 @@ namespace ELearning.Api.Features.Lessons.Commands.CreateLesson;
 public class CreateLessonCommandHandler : IRequestHandler<CreateLessonCommand, LessonResponseDto?>
 {
     private readonly ApplicationDbContext _context;
-    public CreateLessonCommandHandler(ApplicationDbContext context)
+    private readonly IMapper _mapper;
+    public CreateLessonCommandHandler(ApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
     public async Task<LessonResponseDto?> Handle(
         CreateLessonCommand request,
@@ -24,23 +27,20 @@ public class CreateLessonCommandHandler : IRequestHandler<CreateLessonCommand, L
         {
             throw new Exception($"Course {request.CourseId} was not found");
         }
-        var lesson = new Lesson
+        var lesson = _mapper.Map<Lesson>(request);
+        lesson.CreatedAt = DateTime.UtcNow;
+        if (request.File != null)
         {
-            Title = request.Title,
-            Description = request.Description,
-            Content = request.Content,
-            CourseId = request.CourseId,
-            CreatedAt = DateTime.UtcNow
-        };
+            using var memoryStream = new MemoryStream();
+            await request.File.CopyToAsync(memoryStream, cancellationToken);
+            lesson.FileName = request.File.FileName;
+            lesson.ContentType = request.File.ContentType;
+            lesson.FileSize = request.File.Length;
+            lesson.FileData = memoryStream.ToArray();
+        }
+
         _context.Add(lesson);
         await _context.SaveChangesAsync(cancellationToken);
-        return new LessonResponseDto
-        {
-            Id = lesson.Id,
-            Title = lesson.Title,
-            Description = lesson.Description,
-            Content = lesson.Content,
-            CreatedAt = lesson.CreatedAt
-        };
+        return _mapper.Map<LessonResponseDto>(lesson);
     }
 }

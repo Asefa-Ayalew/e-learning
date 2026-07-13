@@ -9,6 +9,7 @@ using ELearning.Api.Extensions;
 using FluentValidation;
 using MediatR;
 using ELearning.Api.Common.Behaviors;
+using ELearning.Api.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtKey = builder.Configuration["Jwt:Key"];
@@ -54,6 +55,7 @@ builder.Services.AddValidatorsFromAssembly(
 builder.Services.AddTransient(
     typeof(IPipelineBehavior<,>),
     typeof(ValidationBehavior<,>));
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 var app = builder.Build();
 
 // Configure middleware

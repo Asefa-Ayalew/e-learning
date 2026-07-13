@@ -1,3 +1,4 @@
+using AutoMapper;
 using ELearning.Api.Data;
 using ELearning.Api.Features.Courses.DTOs;
 using MediatR;
@@ -9,9 +10,11 @@ public class UpdateCourseCommandHandler
     : IRequestHandler<UpdateCourseCommand, CourseResponseDto>
 {
     private readonly ApplicationDbContext _context;
-    public UpdateCourseCommandHandler(ApplicationDbContext context)
+    private readonly IMapper _mapper;
+    public UpdateCourseCommandHandler(ApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<CourseResponseDto> Handle(
@@ -25,18 +28,10 @@ public class UpdateCourseCommandHandler
         if (course == null)
             return null;
 
-        course.Title = request.Title;
-        course.Description = request.Description;
-        course.Price = request.Price;
+        _mapper.Map(request, course);
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return new CourseResponseDto
-        {
-            Id = course.Id,
-            Title = course.Title,
-            Description = course.Description,
-            CreatedAt = course.CreatedAt
-        };
+        return _mapper.Map<CourseResponseDto>(course);
     }
 }
