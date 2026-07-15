@@ -29,6 +29,10 @@ public class CreateLessonCommandHandler : IRequestHandler<CreateLessonCommand, L
         }
         var lesson = _mapper.Map<Lesson>(request);
         lesson.CreatedAt = DateTime.UtcNow;
+        if (request.File == null)
+        {
+            throw new Exception("File was not received.");
+        }
         if (request.File != null)
         {
             using var memoryStream = new MemoryStream();

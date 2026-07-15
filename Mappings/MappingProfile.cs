@@ -24,7 +24,6 @@ public class MappingProfile : Profile
 
         CreateMap<UpdateCourseCommand, Course>();
 
-
         // Lesson
         CreateMap<Lesson, LessonResponseDto>();
 
